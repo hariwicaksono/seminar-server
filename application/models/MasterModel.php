@@ -11,6 +11,22 @@ class MasterModel extends CI_Model {
 		}
 	}
 
+	public function get_aktif_seminar()
+	{
+		$this->db->select('*');
+		$this->db->from('seminar');
+		$this->db->where('aktif_seminar','Y');
+		return $this->db->get()->result_array();
+	}
+
+	public function get_arsip_seminar()
+	{
+		$this->db->select('*');
+		$this->db->from('seminar');
+		$this->db->where('aktif_seminar','N');
+		return $this->db->get()->result_array();
+	}
+
 	public function get_pembayaran($id = null)
 	{
 		if ($id == null) {
