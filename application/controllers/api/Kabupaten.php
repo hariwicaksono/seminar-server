@@ -5,7 +5,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 require APPPATH . 'libraries/REST_Controller.php';
 require APPPATH . 'libraries/Format.php';
 
-class KartuIdentitas extends REST_Controller{
+class Kabupaten extends REST_Controller{
 	
 	public function __construct($config = 'rest')
     {
@@ -24,9 +24,9 @@ class KartuIdentitas extends REST_Controller{
 	{
 		$id = $this->get('id');
 		if ($id == null) {
-			$user = $this->Model->get_kartuidentitas();
+			$user = $this->Model->get_kabupaten();
 		} else {
-			$user = $this->Model->get_kartuidentitas($id);
+			$user = $this->Model->get_kabupaten($id);
 		}
  
 		if ($user) {
