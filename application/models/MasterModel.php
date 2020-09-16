@@ -107,13 +107,13 @@ class MasterModel extends CI_Model {
 
 	public function cek_login_user($user,$password)
 	{
-		return $this->db->get_where('peserta',['email_peserta' => $user , 'password'=>$password ])->result_array();
+		return $this->db->get_where('peserta',['email_peserta' => $user , 'password'=>$password, 'status_aktivasi'=>'Y' ])->result_array();
 		//return $this->db->result_array();
 	}
  
 	public function cek_login_admin($user,$password)
 	{
-		return $this->db->get_where('pengguna',['usernm' => $user , 'passwd'=>$password ])->result_array();
+		return $this->db->get_where('pengguna',['usernm' => $user , 'passwd'=>$password, 'blokir'=>'N' ])->result_array();
 		//return $this->db->result_array();
 	}
  
@@ -212,25 +212,30 @@ class MasterModel extends CI_Model {
 		return $this->db->affected_rows();
 	}
 
-	public function cari_orang($id='')
+	public function cari_seminar($id='')
 	{
 		if ($id === '') {
-			return $this->db->get('calonsiswa')->result_array();
+			
 		} else {
-			$this->db->from('calonsiswa');
-			$this->db->like('nodaf', $id);
-			$this->db->or_like('nama', $id);
+			$this->db->from('seminar');
+			$this->db->like('nm_seminar', $id);
+			$this->db->or_like('headline_seminar', $id);
+			$this->db->or_like('deskripsi_seminar', $id);
 			$query = $this->db->get();
 			return $query->result_array();
 		}
 	}
 
-	public function username_exist($id='')
+	public function check_peserta($id='')
 	{
 		if ($id === '') {
-			return $this->db->get('registrasi_pmb')->result_array();
+			//return $this->db->get('registrasi_pmb')->result_array();
 		} else {
-			return $this->db->get_where('registrasi_pmb',['username'=>$id])->result_array();
+			$this->db->from('peserta');
+			$this->db->like('nama_peserta', $id);
+			$this->db->or_like('no_kartuid', $id);
+			$query = $this->db->get();
+			return $query->result_array();
 		}
 	}
 
@@ -241,6 +246,12 @@ class MasterModel extends CI_Model {
 		} else {
 			return $this->db->get_where('kabupaten',['id'=>$id])->result_array();
 		}
+	}
+
+	public function put_aktivasiakun($id,$data)
+	{
+		$this->db->update('peserta',$data,['kode_aktivasi'=>$id]);
+		return $this->db->affected_rows();
 	}
 
 

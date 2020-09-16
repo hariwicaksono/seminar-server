@@ -23,12 +23,8 @@ class CaraDaftar extends REST_Controller{
 	public function index_get()
 	{
 		$id = $this->get('id');
-		if ($id == null) {
-			$user = $this->Model->get_caradaftar();
-		} else {
-			$user = $this->Model->get_caradaftar($id);
-		}
- 
+		$user = $this->Model->get_caradaftar();
+		
 		if ($user) {
 			$this->response([
 				'status' => 1,

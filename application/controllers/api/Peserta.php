@@ -24,8 +24,8 @@ class Peserta extends REST_Controller{
 	{
 		$id = $this->get('id');
 		if ($id == null) {
-			$this->response(['id'=> 'kosong']);
-			//$user = $this->Model->get_user();
+			//$this->response(['id'=> 'kosong']);
+			$user = $this->Model->get_peserta();
 		} else {
 			$user = $this->Model->get_peserta($id);
 		}
@@ -47,18 +47,41 @@ class Peserta extends REST_Controller{
 
 	public function index_post()
 	{
+		$tgl_sekarang = date("Y-m-d");
+		$jam_sekarang = date("H:i:s");
+		$password_baru = substr(md5(uniqid(rand(),1)),3,10);
+		$kode_aktivasi = substr(md5(uniqid(rand(),1)),3,20);
+		$today = date("Ym");
+		$query = $this->db->query("SELECT max(id_peserta) AS last FROM peserta WHERE id_peserta LIKE '$today%'");
+		$data = $query->row_array();
+		$lastCard = $data['last'];
+		$lastKdUrut = substr($lastCard, 8, 4);
+		$nextKdUrut = $lastKdUrut + 1;
+		$nextKd = $today.sprintf('%04s', $nextKdUrut);
+		$token_pst = sha1($nextKd);
+
 		$data = [
-			'username' => $this->post('username'),
-			'email' => $this->post('email'),
-			'password' => $this->post('password'),
-			'aktivasi' => $this->post('aktivasi'),
-			'nama' => $this->post('nama'),
-			'telp' => $this->post('telp'),
-			'bukti_pembayaran' => $this->post('bukti_pembayaran'),
-			'foto' =>$this->post('foto'),
+			'id_peserta' => $nextKd,
+			'id_seminar' => $this->post('seminar'),
+			'id_kartu' => $this->post('jns_id'),
+			'id_pendidikan' => $this->post('pendidikan'),
+			'no_kartuid' => $this->post('no_id'),
+			'nama_peserta' => $this->post('nm_peserta'),
+			'range_usia' => $this->post('usia'),
+			'jns_kelamin' => $this->post('kelamin'),
+			'alamat_peserta' => $this->post('alamat'),
+			'kota_kab_peserta' => $this->post('kota_kab'),
+			'kode_pos' => $this->post('kodepos'),
+			'no_hp' => $this->post('no_hp'),
+			'email_peserta' => $this->post('email'),
+			'tgl_daftar' => $tgl_sekarang,
+			'jam_daftar' => $jam_sekarang,
+			'kode_aktivasi' => $kode_aktivasi,
+			'password' => $password_baru,
+			'token_peserta' => $token_pst
 		];
 
-		if ($this->Model->post_user($data) > 0) {
+		if ($this->Model->post_peserta($data) > 0) {
 			$this->response([
 				'status' => 1,
 				'data' => 'Success Post Data'
