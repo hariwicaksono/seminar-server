@@ -254,6 +254,29 @@ class MasterModel extends CI_Model {
 		return $this->db->affected_rows();
 	}
 
+	public function get_pembayaran_byid($id)
+	{
+		$this->db->select('*, kb.name as kota_kab_peserta');
+		$this->db->from('peserta p');
+		$this->db->join('seminar s', 's.id_seminar = p.id_seminar');
+		$this->db->join('kabupaten kb', 'kb.id = p.kota_kab_peserta','left');
+		$this->db->join('pembayaran pb', 'pb.id_seminar = s.id_seminar');
+		$this->db->join('pembayaran pc', 'pc.id_peserta = p.id_peserta');
+		$this->db->where('email_peserta', $id);
+		$query = $this->db->get();
+		return $query->result_array();
+	}
+
+	public function get_seminar_byid($id)
+	{
+		$this->db->select('*');
+		$this->db->from('seminar s');
+		$this->db->join('peserta p', 'p.id_seminar = s.id_seminar');
+		$this->db->where('email_peserta', $id);
+		$query = $this->db->get();
+		return $query->result_array();
+	}
+
 
 
 
