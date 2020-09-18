@@ -46,16 +46,33 @@ class Pembayaran extends REST_Controller{
 
 	public function index_post()
 	{
+		$tgl_sekarang = date("Y-m-d");
+		$jam_sekarang = date("H:i:s");
+		$today = date("Ym");
+		$query = $this->db->query("SELECT max(id_pembayaran) AS last FROM pembayaran WHERE id_pembayaran LIKE '$today%'");
+		$data = $query->row_array();
+		$lastCard = $data['last'];
+		$lastKdUrut = substr($lastCard, 8, 4);
+		$nextKdUrut = $lastKdUrut + 1;
+		$nextKd = $today.sprintf('%04s', $nextKdUrut);
+		$token_pay = sha1($nextKd);
 		$data = [
-			'nama_user' => $this->post('nama'),
-			'alamat_user' => $this->post('alamat'),
-			'no_hp_user' => $this->post('nohp'),
-			'email_user' => $this->post('email'),
-			'password_user' => $this->post('password'),
-			'photo_user' =>$this->post('foto'),
+			'id_pembayaran' => $nextKd,
+			'id_peserta' => $this->post('id_peserta'),
+			'id_seminar' => $this->post('id_seminar'),
+			'id_bank' => $this->post('bank_tujuan'),
+			'bank_transfer' => '1',
+			'jml_transfer' => $this->post('jml_trf'),
+			'nm_pemilik_rek' => $this->post('pemilik_rek'),
+			'informasi_tambahan' => $this->post('info_tambahan'),
+			'tgl_transfer' => $tgl_sekarang,
+			'jam_transfer' => $jam_sekarang,
+			'img_bayar' => $this->post('foto'),
+			'status_bayar' => 'Baru',
+			'token_bayar' => $token_pay,
 		];
 
-		if ($this->Model->post_user($data) > 0) {
+		if ($this->Model->post_pembayaran($data) > 0) {
 			$this->response([
 				'status' => 1,
 				'data' => 'Success Post Data'

@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 require APPPATH . 'libraries/REST_Controller.php';
 require APPPATH . 'libraries/Format.php';
-class CheckPeserta extends REST_Controller{
+class CheckPembayaran extends REST_Controller{
  
 	public function __construct($config = 'rest')
     {
@@ -21,11 +21,10 @@ class CheckPeserta extends REST_Controller{
  
 	public function index_get()
 	{
-		$id = $this->get('id');
-
-		$orang = $this->Model->check_peserta($id);
+		$pst = $this->get('id_peserta');
+		$smr = $this->get('id_seminar');
+		$orang = $this->Model->check_pembayaran($pst, $smr);
 		
-
 		if ($orang) {
 			$this->response([
 				'status' => 1,

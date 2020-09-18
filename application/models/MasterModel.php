@@ -217,6 +217,7 @@ class MasterModel extends CI_Model {
 		if ($id === '') {
 			
 		} else {
+			$this->db->select('*');
 			$this->db->from('seminar');
 			$this->db->like('nm_seminar', $id);
 			$this->db->or_like('headline_seminar', $id);
@@ -226,17 +227,26 @@ class MasterModel extends CI_Model {
 		}
 	}
 
-	public function check_peserta($id='')
+	public function check_peserta($id)
 	{
-		if ($id === '') {
-			//return $this->db->get('registrasi_pmb')->result_array();
-		} else {
-			$this->db->from('peserta');
-			$this->db->like('nama_peserta', $id);
-			$this->db->or_like('no_kartuid', $id);
-			$query = $this->db->get();
-			return $query->result_array();
-		}
+		$this->db->select('*');
+		$this->db->from('peserta');
+		$this->db->like('nama_peserta', $id);
+		$this->db->or_like('no_kartuid', $id);
+		$query = $this->db->get();
+		return $query->result_array();
+	}
+
+	public function check_pembayaran($pst, $smr)
+	{
+		$this->db->select('*');
+		$this->db->from('pembayaran pb');
+		$this->db->join('peserta p', 'p.id_peserta = pb.id_peserta');
+		$this->db->join('seminar s', 's.id_seminar = pb.id_seminar');
+		$this->db->like('pb id_peserta', $pst);
+		$this->db->or_like('pb id_seminar', $smr);
+		$query = $this->db->get();
+		return $query->result_array();
 	}
 
 	public function get_kabupaten($id = null)
