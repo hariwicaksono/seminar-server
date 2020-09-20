@@ -62,7 +62,7 @@ class Peserta extends REST_Controller{
 
 		$data = [
 			'id_peserta' => $nextKd,
-			'id_seminar' => $this->post('seminar'),
+			'id_seminar' => $this->post('id_seminar'),
 			'id_kartu' => $this->post('jns_id'),
 			'id_pendidikan' => $this->post('pendidikan'),
 			'no_kartuid' => $this->post('no_id'),

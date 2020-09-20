@@ -227,26 +227,30 @@ class MasterModel extends CI_Model {
 		}
 	}
 
-	public function check_peserta($id)
+	public function check_peserta($id, $nama)
 	{
-		$this->db->select('*');
+
+		$this->db->select('no_kartuid, nama_peserta');
 		$this->db->from('peserta');
-		$this->db->like('nama_peserta', $id);
-		$this->db->or_like('no_kartuid', $id);
+		$this->db->like('no_kartuid', $id, FALSE);
+		$this->db->or_like('nama_peserta', $nama, FALSE);
 		$query = $this->db->get();
 		return $query->result_array();
 	}
 
-	public function check_pembayaran($pst, $smr)
+	public function check_pembayaran($peserta, $seminar)
 	{
+	
 		$this->db->select('*');
-		$this->db->from('pembayaran pb');
-		$this->db->join('peserta p', 'p.id_peserta = pb.id_peserta');
-		$this->db->join('seminar s', 's.id_seminar = pb.id_seminar');
-		$this->db->like('pb id_peserta', $pst);
-		$this->db->or_like('pb id_seminar', $smr);
+		$this->db->from('pembayaran pb, peserta p, seminar s');
+		$this->db->where('pb.id_seminar = s.id_seminar');
+		$this->db->where('pb.id_peserta = p.id_peserta');
+		$this->db->where('pb.id_peserta', $peserta);
+		$this->db->where('pb.id_seminar', $seminar);
 		$query = $this->db->get();
 		return $query->result_array();
+		
+
 	}
 
 	public function get_kabupaten($id = null)
@@ -268,11 +272,12 @@ class MasterModel extends CI_Model {
 	{
 		$this->db->select('*, kb.name as kota_kab_peserta');
 		$this->db->from('peserta p');
-		$this->db->join('seminar s', 's.id_seminar = p.id_seminar');
+		$this->db->join('seminar s', 's.id_seminar = p.id_seminar','left');
 		$this->db->join('kabupaten kb', 'kb.id = p.kota_kab_peserta','left');
-		$this->db->join('pembayaran pb', 'pb.id_seminar = s.id_seminar');
-		$this->db->join('pembayaran pc', 'pc.id_peserta = p.id_peserta');
+		$this->db->join('pembayaran pb', 'pb.id_seminar = s.id_seminar','left');
+		$this->db->join('pembayaran pc', 'pc.id_peserta = p.id_peserta','left');
 		$this->db->where('email_peserta', $id);
+		$this->db->group_by('p.id_peserta');   
 		$query = $this->db->get();
 		return $query->result_array();
 	}

@@ -21,19 +21,19 @@ class CheckPembayaran extends REST_Controller{
  
 	public function index_get()
 	{
-		$pst = $this->get('id_peserta');
-		$smr = $this->get('id_seminar');
-		$orang = $this->Model->check_pembayaran($pst, $smr);
+		$peserta = $this->get('id_peserta');
+		$seminar = $this->get('id_seminar');
+		$orang = $this->Model->check_pembayaran($peserta, $seminar);
 		
-		if ($orang) {
+		if ($orang > 0) {
 			$this->response([
 				'status' => 1,
-				'results' => 'unavailable'
+				'results' => $orang
 			],REST_Controller::HTTP_OK);
 		} else {
 			$this->response([
 				'status' => 0,
-				'results' => 'available'
+				'results' => 'Not Found'
 			],REST_Controller::HTTP_NOT_FOUND);
 		}
 
