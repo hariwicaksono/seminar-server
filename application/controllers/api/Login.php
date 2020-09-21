@@ -28,7 +28,7 @@ class Login extends REST_Controller
 	{
 
 		$user = $this->post('username');
-		$password = $this->post('password');
+		$password = md5($this->post('password'));
 		$level = $this->post('level');
 		if ($level == "USER") {
 			$cek = $this->Model->cek_login_user($user,$password);
