@@ -250,7 +250,6 @@ class MasterModel extends CI_Model {
 		$query = $this->db->get();
 		return $query->result_array();
 		
-
 	}
 
 	public function get_kabupaten($id = null)
@@ -288,6 +287,15 @@ class MasterModel extends CI_Model {
 		$this->db->from('seminar s');
 		$this->db->join('peserta p', 'p.id_seminar = s.id_seminar');
 		$this->db->where('email_peserta', $id);
+		$query = $this->db->get();
+		return $query->result_array();
+	}
+
+
+	public function get_kalender($id = null)
+	{
+		$this->db->select('nm_seminar as title, tgl_seminar as date');
+		$this->db->from('seminar');
 		$query = $this->db->get();
 		return $query->result_array();
 	}

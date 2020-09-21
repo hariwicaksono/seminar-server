@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 require APPPATH . 'libraries/REST_Controller.php';
 require APPPATH . 'libraries/Format.php';
-class CheckNokartu extends REST_Controller{
+class Kalender extends REST_Controller{
  
 	public function __construct($config = 'rest')
     {
@@ -17,27 +17,26 @@ class CheckNokartu extends REST_Controller{
         if($method == "OPTIONS") {
             die();
         }
-    }
+    } 
  
 	public function index_get()
 	{
-		$id = $this->get('no_id');
+		$id = $this->get('id');
 		if ($id == null) {
-			$this->response(['id'=> 'kosong']);
-			//$orang = $this->Model->cari_orang();
+			$kalender = $this->Model->get_kalender();
 		} else {
-		$orang = $this->Model->check_nokartu($id);
+			$kalender = $this->Model->get_kalender($id);
 		}
 
-		if ($orang) {
+		if ($kalender) {
 			$this->response([
 				'status' => 1,
-				'results' => 'unavailable'
+				'data' => $kalender
 			],REST_Controller::HTTP_OK);
 		} else {
 			$this->response([
 				'status' => 0,
-				'results' => 'available'
+				'data' => 'NOT FOUND'
 			],REST_Controller::HTTP_NOT_FOUND);
 		}
 
