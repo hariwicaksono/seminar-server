@@ -144,6 +144,33 @@ class MasterModel extends CI_Model {
 		return $this->db->affected_rows();
 	}
 
+	public function get_pengguna($id = null)
+	{
+		if ($id == null) {
+			return $this->db->get('pengguna')->result_array();
+		} else {
+			return $this->db->get_where('pengguna',['usernm'=>$id])->result_array();
+		}
+	}
+
+	public function post_pengguna($data)
+	{
+		$this->db->insert('pengguna',$data);
+		return $this->db->affected_rows();
+	}
+
+	public function delete_pengguna($id = null)
+	{
+		$this->db->delete('pengguna',['usernm' => $id]);
+		return $this->db->affected_rows();
+	}
+
+	public function put_pengguna($id,$data)
+	{
+		$this->db->update('pengguna',$data,['usernm'=>$id]);
+		return $this->db->affected_rows();
+	}
+
 	public function get_kartuidentitas($id = null)
 	{
 		if ($id == null) {
@@ -271,12 +298,12 @@ class MasterModel extends CI_Model {
 	{
 		$this->db->select('*, kb.name as kota_kab_peserta');
 		$this->db->from('peserta p');
-		$this->db->join('seminar s', 's.id_seminar = p.id_seminar','left');
+		$this->db->join('seminar s', 's.id_seminar = p.id_seminar');
 		$this->db->join('kabupaten kb', 'kb.id = p.kota_kab_peserta','left');
-		$this->db->join('pembayaran pb', 'pb.id_seminar = s.id_seminar','left');
-		$this->db->join('pembayaran pc', 'pc.id_peserta = p.id_peserta','left');
-		$this->db->where('email_peserta', $id);
-		$this->db->group_by('p.id_peserta');   
+		$this->db->join('pembayaran pb', 'pb.id_seminar = s.id_seminar');
+		$this->db->join('pembayaran pc', 'pc.id_peserta = p.id_peserta');
+		$this->db->where('p.email_peserta', $id);
+		$this->db->group_by('p.email_peserta');   
 		$query = $this->db->get();
 		return $query->result_array();
 	}

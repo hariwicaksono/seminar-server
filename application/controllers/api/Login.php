@@ -26,7 +26,6 @@ class Login extends REST_Controller
 
 	public function index_post()
 	{
-
 		$user = $this->post('username');
 		$password = md5($this->post('password'));
 		$level = $this->post('level');
@@ -40,7 +39,7 @@ class Login extends REST_Controller
 			} else {
 					$this->response([
 					'id'=> '404',
-					'data' => 'Data Not Found'
+					'data' => 'Data Not Found 1'
 				],REST_Controller::HTTP_OK);
 			}
 		} else if ($level =="ADMIN"){
