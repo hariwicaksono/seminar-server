@@ -97,12 +97,27 @@ class MasterModel extends CI_Model {
 		return $this->db->get()->result_array();
 	}
  
-	public function get_identitasweb()
+	public function get_identitasweb($id)
 	{
-		$this->db->select('*');
-		$this->db->from('identitas_web');
-		$this->db->where('id_identitas','1');
-		return $this->db->get()->result_array();
+		return $this->db->get_where('identitas_web',['id_identitas'=>$id])->result_array();
+	}
+
+	public function post_identitasweb($data)
+	{
+		$this->db->insert('identitas_web',$data);
+		return $this->db->affected_rows();
+	}
+
+	public function delete_identitasweb($id = null)
+	{
+		$this->db->delete('identitas_web',['id_identitas' => $id]);
+		return $this->db->affected_rows();
+	}
+
+	public function put_identitasweb($id,$data)
+	{
+		$this->db->update('identitas_web',$data,['id_identitas'=>$id]);
+		return $this->db->affected_rows();
 	}
 
 	public function cek_login_user($user,$password)
@@ -264,7 +279,7 @@ class MasterModel extends CI_Model {
 		$query = $this->db->get();
 		return $query->result_array();
 	}
-
+ 
 	public function check_pembayaran($peserta, $seminar)
 	{
 	
@@ -327,7 +342,34 @@ class MasterModel extends CI_Model {
 		return $query->result_array();
 	}
 
+	public function count_seminar()
+	{
+		return $this->db->count_all('seminar');  
+	}
 
+	public function count_peserta()
+	{
+		return $this->db->count_all('peserta');  
+	}
+
+	public function count_bayarnew()
+	{
+		$this->db->select('count(*) as  new');
+		$this->db->from('pembayaran');
+		$this->db->where('status_bayar','Baru');
+		$query = $this->db->get();
+		return $query->result_array();
+	}
+
+	public function count_bayarcancel()
+	{
+		$this->db->select('count(*) as  cancel');
+		$this->db->from('pembayaran');
+		$this->db->where('status_bayar','Batal');
+		$query = $this->db->get();
+		return $query->result_array();
+	}
+	
 
 
 }
