@@ -19,16 +19,16 @@ class IdentitasWeb extends REST_Controller{
             die();
         }
     }
-
+ 
 	public function index_get()
 	{
 		$id = '1';
-		$user = $this->Model->get_identitasweb($id);
+		$data = $this->Model->get_identitasweb($id);
  
-		if ($user) {
+		if ($data) {
 			$this->response([
 				'status' => 1,
-				'data' => $user
+				'data' => $data
 			],REST_Controller::HTTP_OK);
 		} else {
 			$this->response([
@@ -55,12 +55,12 @@ class IdentitasWeb extends REST_Controller{
 			'instagram' => $this->put('instagram'),
 			'meta_deskripsi' => $this->put('meta_deskripsi'),
 			'meta_keyword' => $this->put('meta_keyword'),
-			'favicon' => ''
+			'favicon' => 'favicon.ico'
 		];
 
 		
 
-		if ($this->Model->put_identitaswebs($id,$data) > 0 ) {
+		if ($this->Model->put_identitasweb($id,$data) > 0 ) {
 			$this->response([
 				'status' => 1,
 				'data' => 'Success Update Data'

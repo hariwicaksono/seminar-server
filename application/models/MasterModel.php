@@ -81,12 +81,18 @@ class MasterModel extends CI_Model {
 		return $this->db->affected_rows();
 	}
 
-	public function get_profil()
+	public function get_profilweb()
 	{
 		$this->db->select('*');
 		$this->db->from('profil_web');
 		$this->db->where('aktif_profil','Y');
 		return $this->db->get()->result_array();
+	}
+
+	public function put_profilweb($id,$data)
+	{
+		$this->db->update('profil_web',$data,['id_profil'=>$id]);
+		return $this->db->affected_rows();
 	}
 
 	public function get_caradaftar()
@@ -96,22 +102,16 @@ class MasterModel extends CI_Model {
 		$this->db->where('aktif_caradaftar','Y');
 		return $this->db->get()->result_array();
 	}
+
+	public function put_caradaftar($id,$data)
+	{
+		$this->db->update('cara_daftar',$data,['id_caradaftar'=>$id]);
+		return $this->db->affected_rows();
+	}
  
 	public function get_identitasweb($id)
 	{
 		return $this->db->get_where('identitas_web',['id_identitas'=>$id])->result_array();
-	}
-
-	public function post_identitasweb($data)
-	{
-		$this->db->insert('identitas_web',$data);
-		return $this->db->affected_rows();
-	}
-
-	public function delete_identitasweb($id = null)
-	{
-		$this->db->delete('identitas_web',['id_identitas' => $id]);
-		return $this->db->affected_rows();
 	}
 
 	public function put_identitasweb($id,$data)

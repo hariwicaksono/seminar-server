@@ -24,7 +24,6 @@ class Peserta extends REST_Controller{
 	{
 		$id = $this->get('id');
 		if ($id == null) {
-			//$this->response(['id'=> 'kosong']);
 			$user = $this->Model->get_peserta();
 		} else {
 			$user = $this->Model->get_peserta($id);
