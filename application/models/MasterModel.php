@@ -30,9 +30,24 @@ class MasterModel extends CI_Model {
 	public function get_pembayaran($id = null)
 	{
 		if ($id == null) {
-			return $this->db->get('pembayaran')->result_array();
+			$this->db->select('pb.id_pembayaran, pb.tgl_transfer, pb.jam_transfer, pb.jml_transfer, pb.nm_pemilik_rek, p.id_peserta, p.nama_peserta, b.nm_bank, b.no_rek, pb.bank_transfer, pb.informasi_tambahan, pb.status_bayar, pb.img_bayar, s.id_seminar, s.nm_seminar');
+			$this->db->from('pembayaran pb');
+			$this->db->join('peserta p', 'p.id_peserta = pb.id_peserta');
+			$this->db->join('seminar s', 's.id_seminar = pb.id_seminar');
+			$this->db->join('bank b', 'b.id_bank = pb.id_bank');
+			$this->db->group_by('pb.id_pembayaran');   
+			$query = $this->db->get();
+			return $query->result_array();
 		} else { 
-		return $this->db->get_where('pembayaran',['id_pembayaran'=>$id])->result_array();
+			$this->db->select('pb.id_pembayaran, pb.tgl_transfer, pb.jam_transfer, pb.jml_transfer, pb.nm_pemilik_rek, p.id_peserta, p.nama_peserta, b.nm_bank, b.no_rek, pb.bank_transfer, pb.informasi_tambahan, pb.status_bayar, pb.img_bayar, s.id_seminar, s.nm_seminar');
+			$this->db->from('pembayaran pb');
+			$this->db->join('peserta p', 'p.id_peserta = pb.id_peserta');
+			$this->db->join('seminar s', 's.id_seminar = pb.id_seminar');
+			$this->db->join('bank b', 'b.id_bank = pb.id_bank');
+			$this->db->where('pb.id_pembayaran', $id);
+			$this->db->group_by('pb.id_pembayaran');   
+			$query = $this->db->get();
+			return $query->result_array();
 		}
 	}
 
@@ -135,9 +150,28 @@ class MasterModel extends CI_Model {
 	public function get_peserta($id = null)
 	{
 		if ($id == null) {
-			return $this->db->get('peserta')->result_array();
+			$this->db->select('p.id_peserta, p.id_seminar, s.nm_seminar, p.nama_peserta, jk.nama_jenkel, kt.jns_kartuid, p.no_kartuid, pd.pendidikan, p.range_usia, p.alamat_peserta, kb.name as kota_kab_peserta, p.kode_pos, p.no_hp, p.email_peserta, p.tgl_daftar, p.jam_daftar, p.status_aktivasi');
+			$this->db->from('peserta p');
+			$this->db->join('seminar s', 's.id_seminar = p.id_seminar');
+			$this->db->join('kabupaten kb', 'kb.id = p.kota_kab_peserta');
+			$this->db->join('kartu_identitas kt', 'kt.id_kartu = p.id_kartu');
+			$this->db->join('pendidikan pd', 'pd.id_pendidikan = p.id_pendidikan');
+			$this->db->join('jenis_kelamin jk', 'jk.id_jenkel = p.jns_kelamin');
+			$this->db->group_by('p.id_peserta');   
+			$query = $this->db->get();
+			return $query->result_array();
 		} else {
-			return $this->db->get_where('peserta',['id_peserta'=>$id])->result_array();
+			$this->db->select('p.id_peserta, p.id_seminar, s.nm_seminar, p.nama_peserta, jk.nama_jenkel, kt.jns_kartuid, p.no_kartuid, pd.pendidikan, p.range_usia, p.alamat_peserta, kb.name as kota_kab_peserta, p.kode_pos, p.no_hp, p.email_peserta, p.tgl_daftar, p.jam_daftar, p.status_aktivasi');
+			$this->db->from('peserta p');
+			$this->db->join('seminar s', 's.id_seminar = p.id_seminar');
+			$this->db->join('kabupaten kb', 'kb.id = p.kota_kab_peserta');
+			$this->db->join('kartu_identitas kt', 'kt.id_kartu = p.id_kartu');
+			$this->db->join('pendidikan pd', 'pd.id_pendidikan = p.id_pendidikan');
+			$this->db->join('jenis_kelamin jk', 'jk.id_jenkel = p.jns_kelamin');
+			$this->db->where('p.id_peserta', $id);
+			$this->db->group_by('p.id_peserta');   
+			$query = $this->db->get();
+			return $query->result_array();
 		}
 	}
 
@@ -147,15 +181,15 @@ class MasterModel extends CI_Model {
 		return $this->db->affected_rows();
 	}
 
-	public function delete_peserta($id = null)
-	{
-		$this->db->delete('peserta',['id_peserta' => $id]);
-		return $this->db->affected_rows();
-	}
-
 	public function put_peserta($id,$data)
 	{
 		$this->db->update('peserta',$data,['id_peserta'=>$id]);
+		return $this->db->affected_rows();
+	}
+
+	public function delete_peserta($id = null)
+	{
+		$this->db->delete('peserta',['id_peserta' => $id]);
 		return $this->db->affected_rows();
 	}
 

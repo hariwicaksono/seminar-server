@@ -29,7 +29,7 @@ class Peserta extends REST_Controller{
 			$user = $this->Model->get_peserta($id);
 		}
  
-		if ($user) {
+		if ($user > 0) {
 			$this->response([
 				'status' => 1,
 				'data' => $user
@@ -115,6 +115,29 @@ class Peserta extends REST_Controller{
 			],REST_Controller::HTTP_NOT_FOUND);
 		}
 
+	}
+
+	public function index_delete()
+	{
+		$id = $_GET['id'];
+		if ($id == null) {
+			$this->response([
+				'status' => 404,
+				'data' => 'id_not found'
+			],REST_Controller::HTTP_BAD_REQUEST);
+		} else {
+			if($this->Model->delete_peserta($id) > 0){
+					$this->response([
+					'status' => 1,
+					'data' => 'Succes Delete data'
+				],REST_Controller::HTTP_OK);
+			} else {
+				$this->response([
+					'status' => 0,
+					'data' => 'Failed Delete Data'
+				],REST_Controller::HTTP_NOT_FOUND);
+			}
+		} 
 	}
 
 }

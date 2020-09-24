@@ -24,15 +24,15 @@ class Pembayaran extends REST_Controller{
 	{
 		$id = $this->get('id');
 		if ($id == null) {
-			$user = $this->Model->get_pembayaran();
+			$bayar = $this->Model->get_pembayaran();
 		} else {
-			$user = $this->Model->get_pembayaran($id);
+			$bayar = $this->Model->get_pembayaran($id);
 		}
  
-		if ($user) {
+		if ($bayar > 0) {
 			$this->response([
 				'status' => 1,
-				'data' => $user
+				'data' => $bayar
 			],REST_Controller::HTTP_OK);
 		} else {
 			$this->response([
@@ -94,7 +94,7 @@ class Pembayaran extends REST_Controller{
 				'data' => 'Id Null'
 			],REST_Controller::HTTP_BAD_REQUEST);
 		} else {
-			if ($this->Model->delete_user($id)) {
+			if ($this->Model->delete_pembayaran($id)) {
 				$this->response([
 					'status' => 1,
 					'data' => 'Success Delete'
