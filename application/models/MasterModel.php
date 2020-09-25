@@ -265,6 +265,12 @@ class MasterModel extends CI_Model {
 		$this->db->update('kartu_identitas',$data,['id_kartu'=>$id]);
 		return $this->db->affected_rows();
 	}
+	
+	public function put_status_kartu($id,$data)
+	{
+		$this->db->update('kartu_identitas',$data,['id_kartu'=>$id]);
+		return $this->db->affected_rows();
+	}
 
 	public function get_pendidikan($id = null)
 	{
