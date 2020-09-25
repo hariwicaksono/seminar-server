@@ -24,15 +24,15 @@ class Seminar extends REST_Controller{
 	{
 		$id = $this->get('id');
 		if ($id == null) {
-			$user = $this->Model->get_seminar();
+			$seminar = $this->Model->get_seminar();
 		} else {
-			$user = $this->Model->get_seminar($id);
+			$seminar = $this->Model->get_seminar($id);
 		}
  
-		if ($user) {
+		if ($seminar > 0) {
 			$this->response([
 				'status' => 1,
-				'data' => $user
+				'data' => $seminar
 			],REST_Controller::HTTP_OK);
 		} else {
 			$this->response([
@@ -93,19 +93,26 @@ class Seminar extends REST_Controller{
 
 	public function index_put()
 	{
-		$id = $this->put('id');
+		$id = $this->put('id_seminar');
+		$tgl_sekarang = date("Y-m-d");
+		$jam_sekarang = date("H:i:s");
 		$data = [
-			'nama_user' => $this->put('nama'),
-			'alamat_user' => $this->put('alamat'),
-			'no_hp_user' => $this->put('hp'),
-			'email_user' => $this->put('email'),
-			'password_user' => $this->put('password'),
-			'photo_user' => $this->put('foto')
+			'nm_seminar' => $this->put('nm_seminar'),
+			'tgl_seminar' => $this->put('tgl_seminar'),
+			'jam_seminar' => $this->put('jam_seminar'),
+			'biaya_seminar' => $this->put('biaya_seminar'),
+			'lokasi_seminar' => $this->put('lokasi_seminar'),
+			'headline_seminar' => $this->put('headline_seminar'),
+			'deskripsi_seminar' => $this->put('deskripsi_seminar'),
+			'aktif_seminar' => $this->put('aktif_seminar'),
+			'md_dt_seminar' => $tgl_sekarang,
+			'md_tm_seminar' => $jam_sekarang,
+			'md_username_seminar' => $this->put('md_username_seminar'),
 		];
 
 		
 
-		if ($this->Model->put_user($id,$data) > 0 ) {
+		if ($this->Model->put_seminar($id,$data) > 0 ) {
 			$this->response([
 				'status' => 1,
 				'data' => 'Success Update Data'

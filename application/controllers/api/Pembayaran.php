@@ -85,6 +85,27 @@ class Pembayaran extends REST_Controller{
 		}
 	}
 
+	public function index_put()
+	{
+		$id = $this->put('id');
+		$data = [
+			'status_bayar' => $this->put('status_bayar'),
+		];
+
+		if ($this->Model->put_pembayaran($id,$data) > 0 ) {
+			$this->response([
+				'status' => 1,
+				'data' => 'Success Update Data'
+			],REST_Controller::HTTP_OK);
+		} else {
+			$this->response([
+				'status' => 0,
+				'data' => 'Failed Update'
+			],REST_Controller::HTTP_NOT_FOUND);
+		}
+
+	}
+
 	public function index_delete()
 	{
 		$id = $_GET['id'];
@@ -106,34 +127,6 @@ class Pembayaran extends REST_Controller{
 				],REST_Controller::HTTP_NOT_FOUND);
 			}
 		}
-	}
-
-	public function index_put()
-	{
-		$id = $this->put('id');
-		$data = [
-			'nama_user' => $this->put('nama'),
-			'alamat_user' => $this->put('alamat'),
-			'no_hp_user' => $this->put('hp'),
-			'email_user' => $this->put('email'),
-			'password_user' => $this->put('password'),
-			'photo_user' => $this->put('foto')
-		];
-
-		
-
-		if ($this->Model->put_user($id,$data) > 0 ) {
-			$this->response([
-				'status' => 1,
-				'data' => 'Success Update Data'
-			],REST_Controller::HTTP_OK);
-		} else {
-			$this->response([
-				'status' => 0,
-				'data' => 'Failed Update'
-			],REST_Controller::HTTP_NOT_FOUND);
-		}
-
 	}
 
 

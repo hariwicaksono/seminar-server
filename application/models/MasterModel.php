@@ -7,8 +7,20 @@ class MasterModel extends CI_Model {
 		if ($id == null) {
 			return $this->db->get('seminar')->result_array();
 		} else { 
-		return $this->db->get_where('seminar',['id_seminar'=>$id])->result_array();
+			return $this->db->get_where('seminar',['id_seminar'=>$id])->result_array();
 		}
+	}
+
+	public function put_seminar($id,$data)
+	{
+		$this->db->update('seminar',$data,['id_seminar'=>$id]);
+		return $this->db->affected_rows();
+	}
+
+	public function put_status_seminar($id,$data)
+	{
+		$this->db->update('seminar',$data,['id_seminar'=>$id]);
+		return $this->db->affected_rows();
 	}
 
 	public function get_aktif_seminar()
