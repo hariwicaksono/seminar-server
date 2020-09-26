@@ -5,7 +5,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 require APPPATH . 'libraries/REST_Controller.php';
 require APPPATH . 'libraries/Format.php';
 
-class CountJenkelP extends REST_Controller{
+class GrafikJenkel extends REST_Controller{
 	
 	public function __construct($config = 'rest')
     {
@@ -23,7 +23,7 @@ class CountJenkelP extends REST_Controller{
 	public function index_get()
 	{
 
-		$count = $this->Model->count_jenkel_p();
+		$count = $this->Model->grafik_jenkel();
  
 		if ($count) {
 			$this->response([

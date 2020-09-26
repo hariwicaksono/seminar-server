@@ -468,20 +468,31 @@ class MasterModel extends CI_Model {
 		return $query->result_array();
 	}
 	
-	public function count_jenkel_l()
+	public function grafik_jenkel()
 	{
-		$this->db->select('count(peserta.jns_kelamin) as jumlah, jns_kelamin');
-		$this->db->from('peserta');
-		$this->db->where('jns_kelamin','L');
+		$this->db->select('jk.nama_jenkel as label, count(p.jns_kelamin) as value');
+		$this->db->from('peserta p');
+		$this->db->join('jenis_kelamin jk', 'jk.id_jenkel = p.jns_kelamin');
+		$this->db->group_by('p.jns_kelamin');
 		$query = $this->db->get();
 		return $query->result_array();
 	}
 
-	public function count_jenkel_p()
+	public function grafik_pendidikan()
 	{
-		$this->db->select('count(peserta.jns_kelamin) as jumlah, jns_kelamin');
-		$this->db->from('peserta');
-		$this->db->where('jns_kelamin','P');
+		$this->db->select('pd.pendidikan as label, count(p.id_pendidikan) as value');
+		$this->db->from('peserta p');
+		$this->db->join('pendidikan pd', 'pd.id_pendidikan = p.id_pendidikan');
+		$this->db->group_by('p.id_pendidikan');
+		$query = $this->db->get();
+		return $query->result_array();
+	}
+
+	public function grafik_rangeusia()
+	{
+		$this->db->select('p.range_usia as label, count(p.range_usia) as value');
+		$this->db->from('peserta p');
+		$this->db->group_by('p.range_usia');
 		$query = $this->db->get();
 		return $query->result_array();
 	}
