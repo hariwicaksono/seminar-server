@@ -24,15 +24,15 @@ class Pendidikan extends REST_Controller{
 	{
 		$id = $this->get('id');
 		if ($id == null) {
-			$user = $this->Model->get_pendidikan();
+			$data = $this->Model->get_pendidikan();
 		} else {
-			$user = $this->Model->get_pendidikan($id);
+			$data = $this->Model->get_pendidikan($id);
 		}
  
-		if ($user) {
+		if ($data > 0) {
 			$this->response([
 				'status' => 1,
-				'data' => $user
+				'data' => $data
 			],REST_Controller::HTTP_OK);
 		} else {
 			$this->response([
@@ -46,16 +46,27 @@ class Pendidikan extends REST_Controller{
 
 	public function index_post()
 	{
+		$tgl_sekarang = date("Y-m-d");
+		$jam_sekarang = date("H:i:s");
+		$today = date("ym");
+		$query = $this->db->query("SELECT max(id_pendidikan) AS last FROM pendidikan WHERE id_pendidikan LIKE '$today%'");
+		$data = $query->row_array();
+		$lastCard = $data['last'];
+		$lastKdUrut = substr($lastCard, 5, 4);
+		$nextKdUrut = $lastKdUrut + 1;
+		$nextKd = $today.sprintf('%04s', $nextKdUrut);
+		$token_pendidikan = sha1($nextKd);
 		$data = [
-			'nama_user' => $this->post('nama'),
-			'alamat_user' => $this->post('alamat'),
-			'no_hp_user' => $this->post('nohp'),
-			'email_user' => $this->post('email'),
-			'password_user' => $this->post('password'),
-			'photo_user' =>$this->post('foto'),
+			'id_pendidikan' => $nextKd,
+			'pendidikan' => $this->post('pendidikan'),
+			'aktif_pendidikan' => 'Y',
+			'cr_dt_pendidikan' => $tgl_sekarang,
+			'cr_tm_pendidikan' => $jam_sekarang,
+			'cr_username_pendidikan' => $this->post('cr_username_pendidikan'),
+			'token_pendidikan' => $token_pendidikan,
 		];
 
-		if ($this->Model->post_user($data) > 0) {
+		if ($this->Model->post_pendidikan($data) > 0) {
 			$this->response([
 				'status' => 1,
 				'data' => 'Success Post Data'
@@ -68,6 +79,33 @@ class Pendidikan extends REST_Controller{
 		}
 	}
 
+	public function index_put()
+	{
+		$id = $this->put('id_pendidikan');
+		$tgl_sekarang = date("Y-m-d");
+		$jam_sekarang = date("H:i:s");
+		$data = [
+			'pendidikan' => $this->put('pendidikan'),
+			'aktif_pendidikan' => $this->put('aktif_pendidikan'),
+			'md_dt_pendidikan' => $tgl_sekarang,
+			'md_tm_pendidikan' => $jam_sekarang,
+			'md_username_pendidikan' => $this->put('md_username_pendidikan')
+		];
+
+		if ($this->Model->put_pendidikan($id,$data) > 0 ) {
+			$this->response([
+				'status' => 1,
+				'data' => 'Success Update Data'
+			],REST_Controller::HTTP_OK);
+		} else {
+			$this->response([
+				'status' => 0,
+				'data' => 'Failed Update'
+			],REST_Controller::HTTP_NOT_FOUND);
+		}
+
+	}
+
 	public function index_delete()
 	{
 		$id = $_GET['id'];
@@ -77,7 +115,7 @@ class Pendidikan extends REST_Controller{
 				'data' => 'Id Null'
 			],REST_Controller::HTTP_BAD_REQUEST);
 		} else {
-			if ($this->Model->delete_user($id)) {
+			if ($this->Model->delete_pendidikan($id)) {
 				$this->response([
 					'status' => 1,
 					'data' => 'Success Delete'
@@ -91,33 +129,6 @@ class Pendidikan extends REST_Controller{
 		}
 	}
 
-	public function index_put()
-	{
-		$id = $this->put('id');
-		$data = [
-			'nama_user' => $this->put('nama'),
-			'alamat_user' => $this->put('alamat'),
-			'no_hp_user' => $this->put('hp'),
-			'email_user' => $this->put('email'),
-			'password_user' => $this->put('password'),
-			'photo_user' => $this->put('foto')
-		];
-
-		
-
-		if ($this->Model->put_user($id,$data) > 0 ) {
-			$this->response([
-				'status' => 1,
-				'data' => 'Success Update Data'
-			],REST_Controller::HTTP_OK);
-		} else {
-			$this->response([
-				'status' => 0,
-				'data' => 'Failed Update'
-			],REST_Controller::HTTP_NOT_FOUND);
-		}
-
-	}
 
 
 }

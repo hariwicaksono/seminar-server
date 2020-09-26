@@ -24,15 +24,15 @@ class Bank extends REST_Controller{
 	{
 		$id = $this->get('id');
 		if ($id == null) {
-			$user = $this->Model->get_bank();
+			$bank = $this->Model->get_bank();
 		} else {
-			$user = $this->Model->get_bank($id);
+			$bank = $this->Model->get_bank($id);
 		}
  
-		if ($user) {
+		if ($bank > 0) {
 			$this->response([
 				'status' => 1,
-				'data' => $user
+				'data' => $bank
 			],REST_Controller::HTTP_OK);
 		} else {
 			$this->response([
@@ -43,7 +43,7 @@ class Bank extends REST_Controller{
 
 	}
 
-
+ 
 	public function index_post()
 	{
 		$data = [

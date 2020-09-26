@@ -90,9 +90,31 @@ class MasterModel extends CI_Model {
 		}
 	}
 
+	public function get_bank_aktif($id = null)
+	{
+		if ($id == null) {
+			$this->db->select('*');
+			$this->db->from('bank');
+			$this->db->where('aktif_bank','Y');
+			return $this->db->get()->result_array();
+		} else { 
+			$this->db->select('*');
+			$this->db->from('bank');
+			$this->db->where('id_bank',$id);
+			$this->db->where('aktif_bank','Y');
+			return $this->db->get()->result_array();
+		}
+	}
+
 	public function post_bank($data)
 	{
 		$this->db->insert('bank',$data);
+		return $this->db->affected_rows();
+	}
+
+	public function put_bank($id,$data)
+	{
+		$this->db->update('bank',$data,['id_bank'=>$id]);
 		return $this->db->affected_rows();
 	}
 
@@ -102,7 +124,7 @@ class MasterModel extends CI_Model {
 		return $this->db->affected_rows();
 	}
 
-	public function put_bank($id,$data)
+	public function put_status_bank($id,$data)
 	{
 		$this->db->update('bank',$data,['id_bank'=>$id]);
 		return $this->db->affected_rows();
@@ -235,6 +257,15 @@ class MasterModel extends CI_Model {
 	public function get_kartuidentitas($id = null)
 	{
 		if ($id == null) {
+			return $this->db->get('kartu_identitas')->result_array();
+		} else {
+			return $this->db->get_where('kartu_identitas',['id_kartu'=>$id])->result_array();
+		}
+	}
+
+	public function get_kartuid_aktif($id = null)
+	{
+		if ($id == null) {
 			$this->db->select('*');
 			$this->db->from('kartu_identitas');
 			$this->db->where('aktif_kartuid','Y');
@@ -275,6 +306,15 @@ class MasterModel extends CI_Model {
 	public function get_pendidikan($id = null)
 	{
 		if ($id == null) {
+			return $this->db->get('pendidikan')->result_array();
+		} else { 
+			return $this->db->get_where('pendidikan',['id_pendidikan'=>$id])->result_array();
+		}
+	}
+
+	public function get_pendidikan_aktif($id = null)
+	{
+		if ($id == null) {
 			$this->db->select('*');
 			$this->db->from('pendidikan');
 			$this->db->where('aktif_pendidikan','Y');
@@ -301,6 +341,12 @@ class MasterModel extends CI_Model {
 	}
 
 	public function put_pendidikan($id,$data)
+	{
+		$this->db->update('pendidikan',$data,['id_pendidikan'=>$id]);
+		return $this->db->affected_rows();
+	}
+
+	public function put_status_pendidikan($id,$data)
 	{
 		$this->db->update('pendidikan',$data,['id_pendidikan'=>$id]);
 		return $this->db->affected_rows();
@@ -422,6 +468,23 @@ class MasterModel extends CI_Model {
 		return $query->result_array();
 	}
 	
+	public function count_jenkel_l()
+	{
+		$this->db->select('count(peserta.jns_kelamin) as jumlah, jns_kelamin');
+		$this->db->from('peserta');
+		$this->db->where('jns_kelamin','L');
+		$query = $this->db->get();
+		return $query->result_array();
+	}
+
+	public function count_jenkel_p()
+	{
+		$this->db->select('count(peserta.jns_kelamin) as jumlah, jns_kelamin');
+		$this->db->from('peserta');
+		$this->db->where('jns_kelamin','P');
+		$query = $this->db->get();
+		return $query->result_array();
+	}
 
 
 }

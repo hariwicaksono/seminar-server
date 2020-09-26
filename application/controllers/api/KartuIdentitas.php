@@ -24,15 +24,15 @@ class KartuIdentitas extends REST_Controller{
 	{
 		$id = $this->get('id');
 		if ($id == null) {
-			$user = $this->Model->get_kartuidentitas();
+			$kartu = $this->Model->get_kartuidentitas();
 		} else {
-			$user = $this->Model->get_kartuidentitas($id);
+			$kartu = $this->Model->get_kartuidentitas($id);
 		}
  
-		if ($user) {
+		if ($kartu > 0) {
 			$this->response([
 				'status' => 1,
-				'data' => $user
+				'data' => $kartu
 			],REST_Controller::HTTP_OK);
 		} else {
 			$this->response([
@@ -46,16 +46,27 @@ class KartuIdentitas extends REST_Controller{
 
 	public function index_post()
 	{
+		$tgl_sekarang = date("Y-m-d");
+		$jam_sekarang = date("H:i:s");
+		$today = date("ym");
+		$query = $this->db->query("SELECT max(id_kartu) AS last FROM kartu_identitas WHERE id_kartu LIKE '$today%'");
+		$data = $query->row_array();
+		$lastCard = $data['last'];
+		$lastKdUrut = substr($lastCard, 5, 4);
+		$nextKdUrut = $lastKdUrut + 1;
+		$nextKd = $today.sprintf('%04s', $nextKdUrut);
+		$token_kartuid = sha1($nextKd);
 		$data = [
-			'nama_user' => $this->post('nama'),
-			'alamat_user' => $this->post('alamat'),
-			'no_hp_user' => $this->post('nohp'),
-			'email_user' => $this->post('email'),
-			'password_user' => $this->post('password'),
-			'photo_user' =>$this->post('foto'),
+			'id_kartu' => $nextKd,
+			'jns_kartuid' => $this->post('jns_kartuid'),
+			'aktif_kartuid' => 'Y',
+			'cr_dt_kartuid' => $tgl_sekarang,
+			'cr_tm_kartuid' => $jam_sekarang,
+			'cr_username_kartuid' => $this->post('cr_username_kartuid'),
+			'token_kartuid' => $token_kartuid,
 		];
 
-		if ($this->Model->post_user($data) > 0) {
+		if ($this->Model->post_kartuidentitas($data) > 0) {
 			$this->response([
 				'status' => 1,
 				'data' => 'Success Post Data'
@@ -66,6 +77,35 @@ class KartuIdentitas extends REST_Controller{
 				'data' => 'Failed Post'
 			],REST_Controller::HTTP_NOT_FOUND);
 		}
+	}
+
+	public function index_put()
+	{
+		$id = $this->put('id_kartu');
+		$tgl_sekarang = date("Y-m-d");
+		$jam_sekarang = date("H:i:s");
+		$data = [
+			'jns_kartuid' => $this->put('jns_kartuid'),
+			'aktif_kartuid' => $this->put('aktif_kartuid'),
+			'md_dt_kartuid' => $tgl_sekarang,
+			'md_tm_kartuid' => $jam_sekarang,
+			'md_username_kartuid' => $this->put('md_username_kartuid')
+		];
+
+		
+
+		if ($this->Model->put_kartuidentitas($id,$data) > 0 ) {
+			$this->response([
+				'status' => 1,
+				'data' => 'Success Update Data'
+			],REST_Controller::HTTP_OK);
+		} else {
+			$this->response([
+				'status' => 0,
+				'data' => 'Failed Update'
+			],REST_Controller::HTTP_NOT_FOUND);
+		}
+
 	}
 
 	public function index_delete()
@@ -89,34 +129,6 @@ class KartuIdentitas extends REST_Controller{
 				],REST_Controller::HTTP_NOT_FOUND);
 			}
 		}
-	}
-
-	public function index_put()
-	{
-		$id = $this->put('id');
-		$data = [
-			'nama_user' => $this->put('nama'),
-			'alamat_user' => $this->put('alamat'),
-			'no_hp_user' => $this->put('hp'),
-			'email_user' => $this->put('email'),
-			'password_user' => $this->put('password'),
-			'photo_user' => $this->put('foto')
-		];
-
-		
-
-		if ($this->Model->put_user($id,$data) > 0 ) {
-			$this->response([
-				'status' => 1,
-				'data' => 'Success Update Data'
-			],REST_Controller::HTTP_OK);
-		} else {
-			$this->response([
-				'status' => 0,
-				'data' => 'Failed Update'
-			],REST_Controller::HTTP_NOT_FOUND);
-		}
-
 	}
 
 
