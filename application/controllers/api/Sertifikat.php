@@ -5,7 +5,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 require APPPATH . 'libraries/REST_Controller.php';
 require APPPATH . 'libraries/Format.php';
 
-class Seminar extends REST_Controller{
+class Sertifikat extends REST_Controller{
 	
 	public function __construct($config = 'rest')
     {
@@ -24,15 +24,15 @@ class Seminar extends REST_Controller{
 	{
 		$id = $this->get('id');
 		if ($id == null) {
-			$seminar = $this->Model->get_seminar();
+			$sertifikat = $this->Model->get_sertifikat();
 		} else {
-			$seminar = $this->Model->get_seminar($id);
+			$sertifikat = $this->Model->get_sertifikat($id);
 		}
  
-		if ($seminar > 0) {
+		if ($sertifikat > 0) {
 			$this->response([
 				'status' => 1,
-				'data' => $seminar
+				'data' => $sertifikat
 			],REST_Controller::HTTP_OK);
 		} else {
 			$this->response([
@@ -46,34 +46,16 @@ class Seminar extends REST_Controller{
 
 	public function index_post()
 	{
-		$tgl_sekarang = date("Y-m-d");
-		$jam_sekarang = date("H:i:s");
-		$today = date("ym");
-		$query = $this->db->query("SELECT max(id_seminar) AS last FROM seminar WHERE id_seminar LIKE '$today%'");
-		$data = $query->row_array();
-		$lastCard = $data['last'];
-		$lastKdUrut = substr($lastCard, 5, 4);
-		$nextKdUrut = $lastKdUrut + 1;
-		$nextKd = $today.sprintf('%04s', $nextKdUrut);
-		$token_seminar = sha1($nextKd);
 		$data = [
-			'id_seminar' => $nextKd,
-			'nm_seminar' => $this->post('nm_seminar'),
-			'tgl_seminar' => $this->post('tgl_seminar'),
-			'jam_seminar' => $this->post('jam_seminar'),
-			'lokasi_seminar' => $this->post('lokasi_seminar'),
-			'biaya_seminar' =>$this->post('biaya_seminar'),
-			'headline_seminar' =>$this->post('headline_seminar'),
-			'deskripsi_seminar' =>$this->post('deskripsi_seminar'),
-			'aktif_seminar' => 'Y',
-			'cr_dt_seminar' => $tgl_sekarang,
-			'cr_tm_seminar' => $jam_sekarang,
-			'cr_username_seminar' =>$this->post('cr_username_seminar'),
-			'token_seminar' =>$token_seminar,
-			'id_sertifikat' =>$this->post('id_sertifikat'),
+			'nama_user' => $this->post('nama'),
+			'alamat_user' => $this->post('alamat'),
+			'no_hp_user' => $this->post('nohp'),
+			'email_user' => $this->post('email'),
+			'password_user' => $this->post('password'),
+			'photo_user' =>$this->post('foto'),
 		];
 
-		if ($this->Model->post_seminar($data) > 0) {
+		if ($this->Model->post_sertifikat($data) > 0) {
 			$this->response([
 				'status' => 1,
 				'data' => 'Success Post Data'
@@ -95,7 +77,7 @@ class Seminar extends REST_Controller{
 				'data' => 'Id Null'
 			],REST_Controller::HTTP_BAD_REQUEST);
 		} else {
-			if ($this->Model->delete_seminar($id)) {
+			if ($this->Model->delete_sertifikat($id)) {
 				$this->response([
 					'status' => 1,
 					'data' => 'Success Delete'
@@ -130,7 +112,7 @@ class Seminar extends REST_Controller{
 
 		
 
-		if ($this->Model->put_seminar($id,$data) > 0 ) {
+		if ($this->Model->put_sertifikat($id,$data) > 0 ) {
 			$this->response([
 				'status' => 1,
 				'data' => 'Success Update Data'

@@ -11,6 +11,12 @@ class MasterModel extends CI_Model {
 		}
 	}
 
+	public function post_seminar($data)
+	{
+		$this->db->insert('seminar',$data);
+		return $this->db->affected_rows();
+	}
+
 	public function put_seminar($id,$data)
 	{
 		$this->db->update('seminar',$data,['id_seminar'=>$id]);
@@ -20,6 +26,12 @@ class MasterModel extends CI_Model {
 	public function put_status_seminar($id,$data)
 	{
 		$this->db->update('seminar',$data,['id_seminar'=>$id]);
+		return $this->db->affected_rows();
+	}
+
+	public function delete_seminar($id = null)
+	{
+		$this->db->delete('seminar',['id_seminar' => $id]);
 		return $this->db->affected_rows();
 	}
 
@@ -349,6 +361,33 @@ class MasterModel extends CI_Model {
 	public function put_status_pendidikan($id,$data)
 	{
 		$this->db->update('pendidikan',$data,['id_pendidikan'=>$id]);
+		return $this->db->affected_rows();
+	}
+
+	public function get_sertifikat($id = null)
+	{
+		if ($id == null) {
+			return $this->db->get('sertifikat')->result_array();
+		} else { 
+			return $this->db->get_where('sertifikat',['id_sertifikat'=>$id])->result_array();
+		}
+	}
+
+	public function post_sertifikat($data)
+	{
+		$this->db->insert('sertifikat',$data);
+		return $this->db->affected_rows();
+	}
+
+	public function put_sertifikat($id,$data)
+	{
+		$this->db->update('sertifikat',$data,['id_sertifikat'=>$id]);
+		return $this->db->affected_rows();
+	}
+
+	public function delete_sertifikat($id = null)
+	{
+		$this->db->delete('sertifikat',['id_sertifikat' => $id]);
 		return $this->db->affected_rows();
 	}
 
