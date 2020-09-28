@@ -19,7 +19,7 @@ class Sertifikat extends REST_Controller{
             die();
         }
     }
-
+ 
 	public function index_get()
 	{
 		$id = $this->get('id');
@@ -46,13 +46,27 @@ class Sertifikat extends REST_Controller{
 
 	public function index_post()
 	{
+		$tgl_sekarang = date("Y-m-d");
+		$jam_sekarang = date("H:i:s");
+		$today = date("ym");
+		$query = $this->db->query("SELECT max(id_sertifikat) AS last FROM sertifikat WHERE id_sertifikat LIKE '$today%'");
+		$data = $query->row_array();
+		$lastCard = $data['last'];
+		$lastKdUrut = substr($lastCard, 5, 4);
+		$nextKdUrut = $lastKdUrut + 1;
+		$nextKd = "SRT".$today.sprintf('%04s', $nextKdUrut);
+		$token_sertifikat = sha1($nextKd);
 		$data = [
-			'nama_user' => $this->post('nama'),
-			'alamat_user' => $this->post('alamat'),
-			'no_hp_user' => $this->post('nohp'),
-			'email_user' => $this->post('email'),
-			'password_user' => $this->post('password'),
-			'photo_user' =>$this->post('foto'),
+			'id_sertifikat' => $nextKd,
+			'img_sertifikat' => $this->post('foto'),
+			'ketua_sertifikat' => $this->post('ketua_sertifikat'),
+			'pejabat1_sertifikat' => $this->post('pejabat1_sertifikat'),
+			'pejabat2_sertifikat' => $this->post('pejabat1_sertifikat'),
+			'tanggal_sertifikat' => $this->post('tanggal_sertifikat'),
+			'cr_dt_sertifikat' => $tgl_sekarang,
+			'cr_tm_sertifikat' => $jam_sekarang,
+			'cr_username_sertifikat' =>$this->post('cr_username_sertifikat'),
+			'token_sertifikat' =>$token_sertifikat,
 		];
 
 		if ($this->Model->post_sertifikat($data) > 0) {
@@ -93,21 +107,18 @@ class Sertifikat extends REST_Controller{
 
 	public function index_put()
 	{
-		$id = $this->put('id_seminar');
+		$id = $this->put('id_sertifikat');
 		$tgl_sekarang = date("Y-m-d");
 		$jam_sekarang = date("H:i:s");
 		$data = [
-			'nm_seminar' => $this->put('nm_seminar'),
-			'tgl_seminar' => $this->put('tgl_seminar'),
-			'jam_seminar' => $this->put('jam_seminar'),
-			'biaya_seminar' => $this->put('biaya_seminar'),
-			'lokasi_seminar' => $this->put('lokasi_seminar'),
-			'headline_seminar' => $this->put('headline_seminar'),
-			'deskripsi_seminar' => $this->put('deskripsi_seminar'),
-			'aktif_seminar' => $this->put('aktif_seminar'),
-			'md_dt_seminar' => $tgl_sekarang,
-			'md_tm_seminar' => $jam_sekarang,
-			'md_username_seminar' => $this->put('md_username_seminar'),
+			//'img_sertifikat' => $this->put('foto'),
+			'ketua_sertifikat' => $this->put('ketua_sertifikat'),
+			'pejabat1_sertifikat' => $this->put('pejabat1_sertifikat'),
+			'pejabat2_sertifikat' => $this->put('pejabat2_sertifikat'),
+			'tanggal_sertifikat' => $this->put('tanggal_sertifikat'),
+			'md_dt_sertifikat' => $tgl_sekarang,
+			'md_tm_sertifikat' => $jam_sekarang,
+			'md_username_sertifikat' => $this->put('md_username_sertifikat'),
 		];
 
 		

@@ -29,6 +29,12 @@ class MasterModel extends CI_Model {
 		return $this->db->affected_rows();
 	}
 
+	public function put_sertifikat_seminar($id,$data)
+	{
+		$this->db->update('seminar',$data,['id_seminar'=>$id]);
+		return $this->db->affected_rows();
+	}
+
 	public function delete_seminar($id = null)
 	{
 		$this->db->delete('seminar',['id_seminar' => $id]);
@@ -390,7 +396,7 @@ class MasterModel extends CI_Model {
 		$this->db->delete('sertifikat',['id_sertifikat' => $id]);
 		return $this->db->affected_rows();
 	}
-
+ 
 	public function cari_seminar($id='')
 	{
 		if ($id === '') {
@@ -448,24 +454,29 @@ class MasterModel extends CI_Model {
 
 	public function get_pembayaran_byid($id)
 	{
-		$this->db->select('*, kb.name as kota_kab_peserta');
+		$this->db->select('pb.id_pembayaran, p.id_peserta, p.id_seminar, s.nm_seminar, s.lokasi_seminar, s.tgl_seminar, s.jam_seminar, p.nama_peserta, p.no_kartuid, p.range_usia, p.alamat_peserta, kb.name as kota_kab_peserta, p.kode_pos, p.no_hp, p.email_peserta, p.tgl_daftar, p.jam_daftar, p.status_aktivasi, p.token_peserta, pc.*');
 		$this->db->from('peserta p');
 		$this->db->join('seminar s', 's.id_seminar = p.id_seminar');
 		$this->db->join('kabupaten kb', 'kb.id = p.kota_kab_peserta','left');
 		$this->db->join('pembayaran pb', 'pb.id_seminar = s.id_seminar');
 		$this->db->join('pembayaran pc', 'pc.id_peserta = p.id_peserta');
-		$this->db->where('p.email_peserta', $id);
-		$this->db->group_by('p.email_peserta');   
+		$this->db->where('p.id_peserta', $id);
+		$this->db->group_by('p.id_peserta');   
 		$query = $this->db->get();
 		return $query->result_array();
 	}
 
 	public function get_seminar_byid($id)
 	{
-		$this->db->select('*');
+		$this->db->select('p.id_peserta, p.id_seminar, s.nm_seminar, s.tgl_seminar, s.jam_seminar, s.lokasi_seminar, p.nama_peserta, jk.nama_jenkel, kt.jns_kartuid, p.no_kartuid, pd.pendidikan, p.range_usia, p.alamat_peserta, kb.name as kota_kab_peserta, p.kode_pos, p.no_hp, p.email_peserta, p.tgl_daftar, p.jam_daftar, p.status_aktivasi, s.id_sertifikat, st.img_sertifikat, st.ketua_sertifikat, st.tanggal_sertifikat, st.pejabat1_sertifikat, st.pejabat2_sertifikat, st.template_sertifikat');
 		$this->db->from('seminar s');
 		$this->db->join('peserta p', 'p.id_seminar = s.id_seminar');
-		$this->db->where('email_peserta', $id);
+		$this->db->join('sertifikat st', 'st.id_sertifikat = s.id_sertifikat');
+		$this->db->join('kabupaten kb', 'kb.id = p.kota_kab_peserta');
+			$this->db->join('kartu_identitas kt', 'kt.id_kartu = p.id_kartu');
+			$this->db->join('pendidikan pd', 'pd.id_pendidikan = p.id_pendidikan');
+			$this->db->join('jenis_kelamin jk', 'jk.id_jenkel = p.jns_kelamin');
+		$this->db->where('id_peserta', $id);
 		$query = $this->db->get();
 		return $query->result_array();
 	}

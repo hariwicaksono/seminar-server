@@ -46,16 +46,30 @@ class Bank extends REST_Controller{
  
 	public function index_post()
 	{
+		$tgl_sekarang = date("Y-m-d");
+		$jam_sekarang = date("H:i:s");
+		$today = date("ym");
+		$query = $this->db->query("SELECT max(id_bank) AS last FROM bank WHERE id_bank LIKE '$today%'");
+		$data = $query->row_array();
+		$lastCard = $data['last'];
+		$lastKdUrut = substr($lastCard, 5, 4);
+		$nextKdUrut = $lastKdUrut + 1;
+		$nextKd = $today.sprintf('%04s', $nextKdUrut);
+		$token_bank = sha1($nextKd);
 		$data = [
-			'nama_user' => $this->post('nama'),
-			'alamat_user' => $this->post('alamat'),
-			'no_hp_user' => $this->post('nohp'),
-			'email_user' => $this->post('email'),
-			'password_user' => $this->post('password'),
-			'photo_user' =>$this->post('foto'),
+			'id_bank' => $nextKd,
+			'nm_bank' => $this->post('nm_bank'),
+			'no_rek' => $this->post('no_rek'),
+			'pemilik_rek' => $this->post('pemilik_rek'),
+			'kantor_cabang' => $this->post('kantor_cabang'),
+			'aktif_bank' => 'Y',
+			'cr_dt_bank' => $tgl_sekarang,
+			'cr_tm_bank' => $jam_sekarang,
+			'cr_username_bank' => $this->post('cr_username_bank'),
+			'token_bank' => $token_bank,
 		];
 
-		if ($this->Model->post_user($data) > 0) {
+		if ($this->Model->post_bank($data) > 0) {
 			$this->response([
 				'status' => 1,
 				'data' => 'Success Post Data'
@@ -66,6 +80,38 @@ class Bank extends REST_Controller{
 				'data' => 'Failed Post'
 			],REST_Controller::HTTP_NOT_FOUND);
 		}
+	}
+
+	public function index_put()
+	{
+		$id = $this->put('id_bank');
+		$tgl_sekarang = date("Y-m-d");
+		$jam_sekarang = date("H:i:s");
+		$data = [
+			'nm_bank' => $this->put('nm_bank'),
+			'no_rek' => $this->put('no_rek'),
+			'pemilik_rek' => $this->put('pemilik_rek'),
+			'kantor_cabang' => $this->put('kantor_cabang'),
+			'aktif_bank' => $this->put('aktif_bank'),
+			'md_dt_bank' => $tgl_sekarang,
+			'md_tm_bank' => $jam_sekarang,
+			'md_username_bank' => $this->put('md_username_bank')
+		];
+
+		
+
+		if ($this->Model->put_bank($id,$data) > 0 ) {
+			$this->response([
+				'status' => 1,
+				'data' => 'Success Update Data'
+			],REST_Controller::HTTP_OK);
+		} else {
+			$this->response([
+				'status' => 0,
+				'data' => 'Failed Update'
+			],REST_Controller::HTTP_NOT_FOUND);
+		}
+
 	}
 
 	public function index_delete()
@@ -90,34 +136,5 @@ class Bank extends REST_Controller{
 			}
 		}
 	}
-
-	public function index_put()
-	{
-		$id = $this->put('id');
-		$data = [
-			'nama_user' => $this->put('nama'),
-			'alamat_user' => $this->put('alamat'),
-			'no_hp_user' => $this->put('hp'),
-			'email_user' => $this->put('email'),
-			'password_user' => $this->put('password'),
-			'photo_user' => $this->put('foto')
-		];
-
-		
-
-		if ($this->Model->put_user($id,$data) > 0 ) {
-			$this->response([
-				'status' => 1,
-				'data' => 'Success Update Data'
-			],REST_Controller::HTTP_OK);
-		} else {
-			$this->response([
-				'status' => 0,
-				'data' => 'Failed Update'
-			],REST_Controller::HTTP_NOT_FOUND);
-		}
-
-	}
-
 
 }
