@@ -468,7 +468,7 @@ class MasterModel extends CI_Model {
 
 	public function get_seminar_byid($id)
 	{
-		$this->db->select('p.id_peserta, p.id_seminar, s.nm_seminar, s.tgl_seminar, s.jam_seminar, s.lokasi_seminar, p.nama_peserta, jk.nama_jenkel, kt.jns_kartuid, p.no_kartuid, pd.pendidikan, p.range_usia, p.alamat_peserta, kb.name as kota_kab_peserta, p.kode_pos, p.no_hp, p.email_peserta, p.tgl_daftar, p.jam_daftar, p.status_aktivasi, s.id_sertifikat, st.img_sertifikat, st.ketua_sertifikat, st.tanggal_sertifikat, st.pejabat1_sertifikat, st.pejabat2_sertifikat, st.template_sertifikat');
+		$this->db->select('p.id_peserta, p.id_seminar, s.nm_seminar, s.tgl_seminar, s.jam_seminar, s.lokasi_seminar, p.nama_peserta, jk.nama_jenkel, kt.jns_kartuid, p.no_kartuid, pd.pendidikan, p.range_usia, p.alamat_peserta, kb.name as kota_kab_peserta, p.kode_pos, p.no_hp, p.email_peserta, p.tgl_daftar, p.jam_daftar, p.status_aktivasi, s.id_sertifikat, st.img_sertifikat, st.ketua_sertifikat, st.tanggal_sertifikat, st.pejabat1_sertifikat, st.pejabat2_sertifikat');
 		$this->db->from('seminar s');
 		$this->db->join('peserta p', 'p.id_seminar = s.id_seminar');
 		$this->db->join('sertifikat st', 'st.id_sertifikat = s.id_sertifikat');
