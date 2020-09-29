@@ -48,7 +48,8 @@ class Peserta extends REST_Controller{
 	{
 		$tgl_sekarang = date("Y-m-d");
 		$jam_sekarang = date("H:i:s");
-		$password_baru = substr(md5(uniqid(rand(),1)),3,10);
+		//$password_baru = substr(md5(uniqid(rand(),1)),3,10);
+		$password_baru = md5('user');
 		$kode_aktivasi = substr(md5(uniqid(rand(),1)),3,20);
 		$today = date("Ym");
 		$query = $this->db->query("SELECT max(id_peserta) AS last FROM peserta WHERE id_peserta LIKE '$today%'");
@@ -58,6 +59,26 @@ class Peserta extends REST_Controller{
 		$nextKdUrut = $lastKdUrut + 1;
 		$nextKd = $today.sprintf('%04s', $nextKdUrut);
 		$token_pst = sha1($nextKd);
+
+		$this->load->library('ciqrcode'); //pemanggilan library QR CODE
+
+		$config['cacheable']	= true; //boolean, the default is true
+		//$config['cachedir']		= './assets/'; //string, the default is application/cache/
+		//$config['errorlog']		= './assets/'; //string, the default is application/logs/
+		$config['imagedir']		= './assets/images/qrcode/'; //direktori penyimpanan qr code
+		$config['quality']		= true; //boolean, the default is true
+		$config['size']			= '128'; //interger, the default is 1024
+		$config['black']		= array(224,255,255); // array, default is array(255,255,255)
+		$config['white']		= array(70,130,180); // array, default is array(0,0,0)
+		$this->ciqrcode->initialize($config);
+
+		$qrcode_name=$nextKd.'.png'; //buat name dari qr code sesuai dengan nim
+
+		$params['data'] = $nextKd; //data yang akan di jadikan QR CODE
+		$params['level'] = 'H'; //H=High
+		$params['size'] = 25;
+		$params['savename'] = FCPATH.$config['imagedir'].$qrcode_name; //simpan image QR CODE ke folder assets/images/
+		$this->ciqrcode->generate($params); // fungsi untuk generate QR CODE
 
 		$data = [
 			'id_peserta' => $nextKd,
@@ -77,6 +98,7 @@ class Peserta extends REST_Controller{
 			'jam_daftar' => $jam_sekarang,
 			'kode_aktivasi' => $kode_aktivasi,
 			'password' => $password_baru,
+			'qrcode' => $qrcode_name,
 			'token_peserta' => $token_pst
 		];
 
