@@ -187,6 +187,17 @@ class MasterModel extends CI_Model {
 		return $this->db->affected_rows();
 	}
 
+	public function get_pengaturan()
+	{
+		return $this->db->get_where('pengaturan',['id_pengaturan'=>'1'])->result_array();
+	}
+
+	public function put_pengaturan($id,$data)
+	{
+		$this->db->update('pengaturan',$data,['id_pengaturan'=>$id]);
+		return $this->db->affected_rows();
+	}
+
 	public function cek_login_user($user,$password)
 	{
 		return $this->db->get_where('peserta',['email_peserta' => $user , 'password'=>$password, 'status_aktivasi'=>'Y' ])->result_array();
@@ -464,7 +475,7 @@ class MasterModel extends CI_Model {
 		$this->db->group_by('p.id_peserta');   
 		$query = $this->db->get();
 		return $query->result_array();
-	}
+	} 
 
 	public function get_seminar_byid($id)
 	{

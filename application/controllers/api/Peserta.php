@@ -48,8 +48,6 @@ class Peserta extends REST_Controller{
 	{
 		$tgl_sekarang = date("Y-m-d");
 		$jam_sekarang = date("H:i:s");
-		//$password_baru = substr(md5(uniqid(rand(),1)),3,10);
-		$password_baru = md5('user');
 		$kode_aktivasi = substr(md5(uniqid(rand(),1)),3,20);
 		$today = date("Ym");
 		$query = $this->db->query("SELECT max(id_peserta) AS last FROM peserta WHERE id_peserta LIKE '$today%'");
@@ -61,25 +59,44 @@ class Peserta extends REST_Controller{
 		$token_pst = sha1($nextKd);
 
 		$this->load->library('ciqrcode'); //pemanggilan library QR CODE
-
 		$config['cacheable']	= true; //boolean, the default is true
-		//$config['cachedir']		= './assets/'; //string, the default is application/cache/
-		//$config['errorlog']		= './assets/'; //string, the default is application/logs/
 		$config['imagedir']		= './assets/images/qrcode/'; //direktori penyimpanan qr code
 		$config['quality']		= true; //boolean, the default is true
 		$config['size']			= '128'; //interger, the default is 1024
 		$config['black']		= array(224,255,255); // array, default is array(255,255,255)
 		$config['white']		= array(70,130,180); // array, default is array(0,0,0)
 		$this->ciqrcode->initialize($config);
-
 		$qrcode_name=$nextKd.'.png'; //buat name dari qr code sesuai dengan nim
-
 		$params['data'] = $nextKd; //data yang akan di jadikan QR CODE
 		$params['level'] = 'H'; //H=High
 		$params['size'] = 25;
 		$params['savename'] = FCPATH.$config['imagedir'].$qrcode_name; //simpan image QR CODE ke folder assets/images/
 		$this->ciqrcode->generate($params); // fungsi untuk generate QR CODE
 
+		$url = "http://localhost:3000/aktivasi_akun/$kode_aktivasi"; //ganti url sesuaikan dengan url anda
+		$get_email = $this->db->query("SELECT * FROM pengaturan WHERE id_pengaturan = '1'");
+		$row = $get_email->row_array();
+		$from = $row['email_from']; //alamat email anda
+		$receiver = $this->post('email'); //email penerima
+		$subject = 'Seminar - Aktivasi Akun Anda';  
+		$message = '<h3>Hallo Pengguna</h3><p>Email yang anda daftarkan: '.$this->post('email').'<br>Password: '.$this->post('password').'</p><h2>Mohon Klik/Tap pada <u>Link aktivasi dibawah ini</u> untuk mengaktifkan akun anda. Setelah itu anda dapat Login</h2><a style="font-size:24px" href='.$url.'>'.$url.'</a><hr><br><br>Terima Kasih';
+		$config['protocol'] = 'smtp';
+		$config['smtp_host'] = $row['smtp_host']; //ganti dengan host smtp anda
+		$config['smtp_port'] = $row['smtp_port']; //ganti dengan port smtp anda
+		$config['smtp_user'] = $row['smtp_user']; //ganti dengan username smtp anda
+		$config['smtp_pass'] = $row['smtp_pass']; //ganti dengan password smtp anda
+		$config['mailtype'] = 'html';
+		$config['charset'] = 'iso-8859-1';
+		$config['wordwrap'] = 'TRUE';
+		$config['newline'] = "\r\n"; 
+		$this->load->library('email', $config);
+		$this->email->initialize($config);
+		$this->email->from($from);
+		$this->email->to($receiver);
+		$this->email->subject($subject);
+		$this->email->message($message);
+		$this->email->send();
+				 
 		$data = [
 			'id_peserta' => $nextKd,
 			'id_seminar' => $this->post('id_seminar'),
@@ -97,7 +114,7 @@ class Peserta extends REST_Controller{
 			'tgl_daftar' => $tgl_sekarang,
 			'jam_daftar' => $jam_sekarang,
 			'kode_aktivasi' => $kode_aktivasi,
-			'password' => $password_baru,
+			'password' => md5($this->post('password')),
 			'qrcode' => $qrcode_name,
 			'token_peserta' => $token_pst
 		];
@@ -113,6 +130,7 @@ class Peserta extends REST_Controller{
 				'data' => 'Failed Post'
 			],REST_Controller::HTTP_NOT_FOUND);
 		}
+		
 	}
 
 	public function index_put()
@@ -161,5 +179,7 @@ class Peserta extends REST_Controller{
 			}
 		} 
 	}
+
+	
 
 }
