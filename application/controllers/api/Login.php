@@ -28,8 +28,14 @@ class Login extends REST_Controller
 	{
 		$user = $this->post('username');
 		$password = md5($this->post('password'));
-		$level = $this->post('level');
-		if ($level == "USER") {
+		$query1 = $this->db->query("SELECT status_pengguna FROM peserta WHERE email_peserta LIKE '%$user%' and status_pengguna = 'User' ");
+		$row = $query1->row_array();
+		$isuser = $row['status_pengguna'];
+		$query2 = $this->db->query("SELECT status_pengguna FROM pengguna WHERE usernm LIKE '%$user%' and status_pengguna = 'Admin' ");
+		$row = $query2->row_array();
+		$isadmin = $row['status_pengguna'];
+
+		if ($isuser == "User") {
 			$cek = $this->Model->cek_login_user($user,$password);
 			if ($cek) {
 				$this->response([
@@ -42,7 +48,7 @@ class Login extends REST_Controller
 					'data' => 'Data Not Found 1'
 				],REST_Controller::HTTP_OK);
 			}
-		} else if ($level =="ADMIN"){
+		} else if ($isadmin == "Admin"){
 			$cek = $this->Model->cek_login_admin($user,$password);
 			if ($cek) {
 				$this->response([

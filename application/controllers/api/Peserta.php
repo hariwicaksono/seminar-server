@@ -57,6 +57,7 @@ class Peserta extends REST_Controller{
 		$nextKdUrut = $lastKdUrut + 1;
 		$nextKd = $today.sprintf('%04s', $nextKdUrut);
 		$token_pst = sha1($nextKd);
+		$qrcode = base_url().'sertifikat/'.$nextKd;
 
 		$this->load->library('ciqrcode'); //pemanggilan library QR CODE
 		$config['cacheable']	= true; //boolean, the default is true
@@ -66,14 +67,14 @@ class Peserta extends REST_Controller{
 		$config['black']		= array(224,255,255); // array, default is array(255,255,255)
 		$config['white']		= array(70,130,180); // array, default is array(0,0,0)
 		$this->ciqrcode->initialize($config);
-		$qrcode_name=$nextKd.'.png'; //buat name dari qr code sesuai dengan nim
-		$params['data'] = $nextKd; //data yang akan di jadikan QR CODE
+		$qrcode_name= 'qr'.$nextKd.'.png'; //buat name dari qr code sesuai dengan nim
+		$params['data'] = $qrcode; //data yang akan di jadikan QR CODE
 		$params['level'] = 'H'; //H=High
 		$params['size'] = 25;
 		$params['savename'] = FCPATH.$config['imagedir'].$qrcode_name; //simpan image QR CODE ke folder assets/images/
 		$this->ciqrcode->generate($params); // fungsi untuk generate QR CODE
 
-		$url = "http://localhost:3000/aktivasi_akun/$kode_aktivasi"; //ganti url sesuaikan dengan url anda
+		/**$url = "http://localhost:3000/aktivasi_akun/$kode_aktivasi"; //ganti url sesuaikan dengan url anda
 		$get_email = $this->db->query("SELECT * FROM pengaturan WHERE id_pengaturan = '1'");
 		$row = $get_email->row_array();
 		$from = $row['email_from']; //alamat email anda
@@ -95,7 +96,7 @@ class Peserta extends REST_Controller{
 		$this->email->to($receiver);
 		$this->email->subject($subject);
 		$this->email->message($message);
-		$this->email->send();
+		$this->email->send();**/
 				 
 		$data = [
 			'id_peserta' => $nextKd,

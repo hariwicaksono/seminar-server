@@ -428,8 +428,17 @@ class MasterModel extends CI_Model {
 
 		$this->db->select('no_kartuid, nama_peserta');
 		$this->db->from('peserta');
-		$this->db->like('no_kartuid', $id, FALSE);
-		$this->db->or_like('nama_peserta', $nama, FALSE);
+		$this->db->like('no_kartuid', $id, 'both');
+		$this->db->like('nama_peserta', $nama, 'both');
+		$query = $this->db->get();
+		return $query->result_array();
+	}
+
+	public function check_email($id)
+	{
+		$this->db->select('email_peserta');
+		$this->db->from('peserta');
+		$this->db->like('email_peserta', $id, 'both');
 		$query = $this->db->get();
 		return $query->result_array();
 	}
@@ -487,6 +496,23 @@ class MasterModel extends CI_Model {
 		$this->db->join('pendidikan pd', 'pd.id_pendidikan = p.id_pendidikan');
 		$this->db->join('jenis_kelamin jk', 'jk.id_jenkel = p.jns_kelamin');
 		$this->db->join('sertifikat st', 'st.id_sertifikat = s.id_sertifikat');
+		$this->db->where('p.id_peserta', $id);
+		$query = $this->db->get();
+		return $query->result_array();
+	}
+
+	public function get_sertifikat_byid($id)
+	{
+		$this->db->select('p.id_peserta, pb.status_bayar, p.id_seminar, s.nm_seminar, s.tgl_seminar, s.jam_seminar, s.lokasi_seminar, s.biaya_seminar, p.qrcode, p.nama_peserta, jk.nama_jenkel, kt.jns_kartuid, p.no_kartuid, pd.pendidikan, p.range_usia, p.alamat_peserta, kb.name as kota_kab_peserta, p.kode_pos, p.no_hp, p.email_peserta, p.tgl_daftar, p.jam_daftar, p.status_aktivasi, s.id_sertifikat, st.img_sertifikat, st.ketua_sertifikat, st.tanggal_sertifikat, st.pejabat1_sertifikat, st.pejabat2_sertifikat');
+		$this->db->from('seminar s');
+		$this->db->join('peserta p', 'p.id_seminar = s.id_seminar');
+		$this->db->join('kabupaten kb', 'kb.id = p.kota_kab_peserta');
+		$this->db->join('kartu_identitas kt', 'kt.id_kartu = p.id_kartu');
+		$this->db->join('pendidikan pd', 'pd.id_pendidikan = p.id_pendidikan');
+		$this->db->join('jenis_kelamin jk', 'jk.id_jenkel = p.jns_kelamin');
+		$this->db->join('sertifikat st', 'st.id_sertifikat = s.id_sertifikat');
+		$this->db->join('pembayaran pb', 'pb.id_seminar = s.id_seminar');
+		$this->db->where('pb.status_bayar', 'Lunas');
 		$this->db->where('p.id_peserta', $id);
 		$query = $this->db->get();
 		return $query->result_array();
