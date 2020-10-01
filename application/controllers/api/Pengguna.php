@@ -24,13 +24,12 @@ class Pengguna extends REST_Controller{
 	{
 		$id = $this->get('id');
 		if ($id == null) {
-			//$this->response(['id'=> 'kosong']);
 			$user = $this->Model->get_pengguna();
 		} else {
 			$user = $this->Model->get_pengguna($id);
 		}
  
-		if ($user) {
+		if ($user > 0) {
 			$this->response([
 				'status' => 1,
 				'data' => $user

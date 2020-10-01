@@ -213,7 +213,7 @@ class MasterModel extends CI_Model {
 	public function get_peserta($id = null)
 	{
 		if ($id == null) {
-			$this->db->select('p.id_peserta, p.id_seminar, s.nm_seminar, p.nama_peserta, jk.nama_jenkel, kt.jns_kartuid, p.no_kartuid, pd.pendidikan, p.range_usia, p.alamat_peserta, kb.name as kota_kab_peserta, p.kode_pos, p.no_hp, p.email_peserta, p.tgl_daftar, p.jam_daftar, p.status_aktivasi');
+			$this->db->select('p.id_peserta, p.id_seminar, s.nm_seminar, p.nama_peserta, p.jns_kelamin, jk.nama_jenkel, kt.jns_kartuid, p.no_kartuid, pd.pendidikan, p.range_usia, p.alamat_peserta, kb.name as kota_kab_peserta, p.kode_pos, p.no_hp, p.email_peserta, p.tgl_daftar, p.jam_daftar, p.status_aktivasi');
 			$this->db->from('peserta p');
 			$this->db->join('seminar s', 's.id_seminar = p.id_seminar');
 			$this->db->join('kabupaten kb', 'kb.id = p.kota_kab_peserta');
@@ -224,7 +224,7 @@ class MasterModel extends CI_Model {
 			$query = $this->db->get();
 			return $query->result_array();
 		} else {
-			$this->db->select('p.id_peserta, p.id_seminar, s.nm_seminar, p.nama_peserta, jk.nama_jenkel, kt.jns_kartuid, p.no_kartuid, pd.pendidikan, p.range_usia, p.alamat_peserta, kb.name as kota_kab_peserta, p.kode_pos, p.no_hp, p.email_peserta, p.tgl_daftar, p.jam_daftar, p.status_aktivasi');
+			$this->db->select('p.id_peserta, p.id_seminar, s.nm_seminar, p.nama_peserta, p.jns_kelamin, jk.nama_jenkel, kt.jns_kartuid, p.no_kartuid, pd.pendidikan, p.range_usia, p.alamat_peserta, kb.name as kota_kab_peserta, p.kode_pos, p.no_hp, p.email_peserta, p.tgl_daftar, p.jam_daftar, p.status_aktivasi');
 			$this->db->from('peserta p');
 			$this->db->join('seminar s', 's.id_seminar = p.id_seminar');
 			$this->db->join('kabupaten kb', 'kb.id = p.kota_kab_peserta');
@@ -259,9 +259,14 @@ class MasterModel extends CI_Model {
 	public function get_pengguna($id = null)
 	{
 		if ($id == null) {
-			return $this->db->get('pengguna')->result_array();
+			$this->db->select('usernm, nm_lengkap');
+			$this->db->from('pengguna');
+			return $this->db->get()->result_array();
 		} else {
-			return $this->db->get_where('pengguna',['usernm'=>$id])->result_array();
+			$this->db->select('usernm, nm_lengkap');
+			$this->db->from('pengguna');
+			$this->db->where('usernm',$id);
+			return $this->db->get()->result_array();
 		}
 	}
 

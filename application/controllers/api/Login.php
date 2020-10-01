@@ -28,14 +28,14 @@ class Login extends REST_Controller
 	{
 		$user = $this->post('username');
 		$password = md5($this->post('password'));
-		$query1 = $this->db->query("SELECT status_pengguna FROM peserta WHERE email_peserta LIKE '%$user%' and status_pengguna = 'User' ");
+		$query1 = $this->db->query("SELECT status_pengguna FROM peserta WHERE email_peserta LIKE '%$user%' and status_pengguna = 'Peserta' ");
 		$row = $query1->row_array();
 		$isuser = $row['status_pengguna'];
 		$query2 = $this->db->query("SELECT status_pengguna FROM pengguna WHERE usernm LIKE '%$user%' and status_pengguna = 'Admin' ");
 		$row = $query2->row_array();
 		$isadmin = $row['status_pengguna'];
 
-		if ($isuser == "User") {
+		if ($isuser == "Peserta") {
 			$cek = $this->Model->cek_login_user($user,$password);
 			if ($cek) {
 				$this->response([
