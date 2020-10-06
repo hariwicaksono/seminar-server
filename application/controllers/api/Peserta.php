@@ -138,13 +138,15 @@ class Peserta extends REST_Controller{
 	{
 		$id = $this->put('id');
 		$data = [
-			'nama' => $this->put('nama'),
-			'telp' => $this->put('telp'),
-			'email' => $this->put('email'),
-			'foto' => $this->put('foto')
+			'nama_peserta' => $this->put('nama_peserta'),
+			'no_kartuid' => $this->put('no_kartuid'),
+			'jns_kelamin' => $this->put('jns_kelamin'),
+			'alamat_peserta' => $this->put('alamat_peserta'),
+			'no_hp' => $this->put('no_hp'),
+			'email_peserta' => $this->put('email_peserta')
 		];
 
-		if ($this->Model->put_user($id,$data) > 0 ) {
+		if ($this->Model->put_peserta($id,$data) > 0 ) {
 			$this->response([
 				'status' => 1,
 				'data' => 'Success Update Data'
