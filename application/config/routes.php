@@ -49,6 +49,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | Examples:	my-controller/index	-> my_controller/index
 |		my-controller/my-method	-> my_controller/my_method
 */
-$route['default_controller'] = 'welcome';
+$route[':any']= 'welcome';
+$route[':any/:num']= 'welcome';
+$route[':any/:any/:num']= 'welcome';
+$route['cetak/:any']= 'welcome';
+$route['akun/:any']= 'welcome';
+$route['konten/:any']= 'welcome';
+$route['cetak/:any']= 'welcome';
+$route['seminar/:any']= 'welcome';
+$route['kartuidentitas/:any']= 'welcome';
+$route['pendidikan/:any']= 'welcome';
+$route['bank/:any']= 'welcome';
+$route['grafik/:any']= 'welcome';
+$route['sertifikat/:any']= 'welcome';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

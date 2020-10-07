@@ -57,7 +57,7 @@ class Peserta extends REST_Controller{
 		$nextKdUrut = $lastKdUrut + 1;
 		$nextKd = $today.sprintf('%04s', $nextKdUrut);
 		$token_pst = sha1($nextKd);
-		$qrcode = base_url().'sertifikat/'.$nextKd;
+		$qrcode = base_url().'cetak_sertifikat/'.$nextKd;
 
 		$this->load->library('ciqrcode'); //pemanggilan library QR CODE
 		$config['cacheable']	= true; //boolean, the default is true
